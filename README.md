@@ -6,10 +6,10 @@ Uma **aplicação nativa para desktop Windows** divertida que usa IA para analis
 ## Recursos
 
 - 🎯 **Análise de Mesquinhice**: Receba suas reclamações avaliadas em uma escala de 0-100
-- 🤖 **Suporte Multi-IA**: Funciona com Claude (Anthropic), OpenAI GPT, Google Gemini, Maritaca e Ollama
+- 🤖 **Suporte Multi-IA**: Funciona com Claude, OpenAI GPT, Google Gemini, Maritaca e Ollama
 - 🇧🇷 **Português Brasileiro**: Interface completamente localizada
 - 📊 **Medidor Visual**: Medidor SVG animado mostrando seu nível de mesquinhice
-- 📊 **Categorias**: Reclamações são categorizadas de "Mestre Zen" a "Colapso Nuclear"
+- 📊 **Categorias**: Reclamações são categorizadas de "Preocupação Legítima" a "Pico da Mesquinhice"
 - 💡 **Conselhos Práticos**: Receba conselhos acionáveis sobre como lidar com suas preocupações
 - 🎨 **Interface Moderna**: Interface limpa e responsiva construída com React e Tailwind CSS
 - ⚙️ **Painel de Configurações**: Gerenciamento seguro de chaves de API com armazenamento persistente
