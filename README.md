@@ -1,5 +1,4 @@
-# M.A.R.C.I.A
-_**M**esquinhômetro **A**utomático e **R**ápido **C**om **I**nteligência **A**rtificial._
+# _**M**esquinhômetro **A**utomático e **R**ápido **C**om **I**nteligência **A**rtificial._
 ![Homepage](https://github.com/kadmielp/MARCIA/raw/main/public/homepage.png)
 
 Uma **aplicação nativa para desktop Windows** divertida que usa IA para analisar o quão mesquinhas são suas reclamações. Compartilhe o que está te incomodando e deixe a IA ser o juiz com humor e sabedoria! Construída com Tauri para uma experiência nativa de desktop.
