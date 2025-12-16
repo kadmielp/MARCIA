@@ -1,15 +1,15 @@
-# M.A.R.C.I.A — **Mesquinhômetro Automático e Rápido Com Inteligência Artificial**
-_Mesquinhômetro Automático e Rápido com Inteligência Artificial_
+# _MARCIA (**M**esquinhômetro **A**utomático e **R**ápido **C**om **IA**_)
+![Homepage](https://github.com/kadmielp/MARCIA/raw/main/public/homepage.png)
 
 Uma **aplicação nativa para desktop Windows** divertida que usa IA para analisar o quão mesquinhas são suas reclamações. Compartilhe o que está te incomodando e deixe a IA ser o juiz com humor e sabedoria! Construída com Tauri para uma experiência nativa de desktop.
 
 ## Recursos
 
 - 🎯 **Análise de Mesquinhice**: Receba suas reclamações avaliadas em uma escala de 0-100
-- 🤖 **Suporte Multi-IA**: Funciona com Claude (Anthropic), OpenAI GPT, Google Gemini, Maritaca e Ollama
+- 🤖 **Suporte Multi-IA**: Funciona com Claude, OpenAI GPT, Google Gemini, Maritaca e Ollama
 - 🇧🇷 **Português Brasileiro**: Interface completamente localizada
 - 📊 **Medidor Visual**: Medidor SVG animado mostrando seu nível de mesquinhice
-- 📊 **Categorias**: Reclamações são categorizadas de "Mestre Zen" a "Colapso Nuclear"
+- 📊 **Categorias**: Reclamações são categorizadas de "Preocupação Legítima" a "Pico da Mesquinhice"
 - 💡 **Conselhos Práticos**: Receba conselhos acionáveis sobre como lidar com suas preocupações
 - 🎨 **Interface Moderna**: Interface limpa e responsiva construída com React e Tailwind CSS
 - ⚙️ **Painel de Configurações**: Gerenciamento seguro de chaves de API com armazenamento persistente
