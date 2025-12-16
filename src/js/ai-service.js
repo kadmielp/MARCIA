@@ -1,29 +1,29 @@
 // AI Service for handling different providers
 window.AIService = (() => {
-  
+
   const AI_PROVIDERS = {
-    'openai': { 
-      name: 'OpenAI (GPT)', 
+    'openai': {
+      name: 'OpenAI (GPT)',
       baseUrl: 'https://api.openai.com/v1',
       model: 'gpt-4o'
     },
-    'gemini': { 
-      name: 'Google Gemini', 
+    'gemini': {
+      name: 'Google Gemini',
       baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
       model: 'gemini-2.5-flash'
     },
-    'claude': { 
-      name: 'Claude (Anthropic)', 
+    'claude': {
+      name: 'Claude (Anthropic)',
       baseUrl: 'https://api.anthropic.com/v1',
       model: 'claude-3-5-sonnet-20241022'
     },
-    'maritaca': { 
-      name: 'Maritaca AI', 
+    'maritaca': {
+      name: 'Maritaca AI',
       baseUrl: 'https://chat.maritaca.ai/api',
       model: 'sabia-3.1'
     },
-    'ollama': { 
-      name: 'Ollama (Local)', 
+    'ollama': {
+      name: 'Ollama (Local)',
       baseUrl: 'http://localhost:11434/v1',
       model: 'gemma3:1b'
     }
@@ -60,7 +60,18 @@ window.AIService = (() => {
     Responda em português brasileiro`;
 
     const providerConfig = AI_PROVIDERS[provider];
-    const baseUrl = provider === 'ollama' ? ollamaUrl : providerConfig.baseUrl;
+    let baseUrl = provider === 'ollama' ? ollamaUrl : providerConfig.baseUrl;
+
+    // Remove trailing slash if present to avoid double slashes
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
+
+    // Ensure Ollama URL ends with /v1 for OpenAI compatibility
+    if (provider === 'ollama' && !baseUrl.endsWith('/v1')) {
+      baseUrl = `${baseUrl}/v1`;
+    }
+
     const model = provider === 'ollama' ? ollamaModel : providerConfig.model;
 
     let response;
@@ -71,53 +82,53 @@ window.AIService = (() => {
       const headers = {
         'Content-Type': 'application/json'
       };
-      
+
       // Only add Authorization for providers that need it
       if (provider !== 'ollama') {
         headers['Authorization'] = `Bearer ${apiKey}`;
       }
-      
+
       const requestUrl = `${baseUrl}/chat/completions`;
       const requestBody = {
         model: model,
         messages: [{ role: 'user', content: prompt }],
         temperature: 1
       };
-      
+
       console.log(`🤖 ${provider} request:`, { url: requestUrl, model: model });
-      
-      const apiResponse = await fetch(requestUrl, {
+
+      const apiResponse = await universalFetch(requestUrl, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(requestBody)
       });
-      
+
       if (!apiResponse.ok) {
         const errorText = await apiResponse.text();
         console.error(`❌ ${provider} API Error:`, apiResponse.status, errorText);
         throw new Error(`${provider} API Error: ${apiResponse.status} - ${apiResponse.statusText}`);
       }
-      
+
       const data = await apiResponse.json();
       console.log(`✅ ${provider} response received:`, data);
       responseText = data.choices?.[0]?.message?.content;
     } else if (provider === 'gemini') {
-      const apiResponse = await fetch(`${baseUrl}/models/${model}:generateContent?key=${apiKey}`, {
+      const apiResponse = await universalFetch(`${baseUrl}/models/${model}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }]
         })
       });
-      
+
       if (!apiResponse.ok) {
         throw new Error(`API Error: ${apiResponse.status} - ${apiResponse.statusText}`);
       }
-      
+
       const data = await apiResponse.json();
       responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     } else if (provider === 'claude') {
-      const apiResponse = await fetch(`${baseUrl}/messages`, {
+      const apiResponse = await universalFetch(`${baseUrl}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,11 +141,11 @@ window.AIService = (() => {
           messages: [{ role: 'user', content: prompt }]
         })
       });
-      
+
       if (!apiResponse.ok) {
         throw new Error(`API Error: ${apiResponse.status} - ${apiResponse.statusText}`);
       }
-      
+
       const data = await apiResponse.json();
       responseText = data.content?.[0]?.text;
     }
@@ -151,12 +162,97 @@ window.AIService = (() => {
     if (cleanResponse.includes('```')) {
       cleanResponse = cleanResponse.replace(/```\n?/g, '');
     }
-    
+
     return JSON.parse(cleanResponse.trim());
+  };
+
+  // Helper for CORS-safe fetching via Tauri
+  const universalFetch = async (url, options = {}) => {
+    if (window.__TAURI__ && window.__TAURI__.http) {
+      try {
+        const { fetch, Body } = window.__TAURI__.http;
+        const tauriOptions = {
+          method: options.method || 'GET',
+          headers: options.headers || {}
+        };
+
+        if (options.body) {
+          try {
+            // Attempt to parse JSON body
+            const bodyObj = JSON.parse(options.body);
+            tauriOptions.body = Body.json(bodyObj);
+          } catch (e) {
+            // Fallback to text
+            tauriOptions.body = Body.text(options.body);
+          }
+        }
+
+        const response = await fetch(url, tauriOptions);
+
+        // Normalize Tauri response to match standard Fetch API interface
+        return {
+          ok: response.ok,
+          status: response.status,
+          statusText: 'Tauri Request',
+          json: async () => response.data,
+          text: async () => typeof response.data === 'string' ? response.data : JSON.stringify(response.data)
+        };
+      } catch (e) {
+        console.error('Tauri fetch failed:', e);
+        throw e;
+      }
+    } else {
+      return window.fetch(url, options);
+    }
+  };
+
+  const getOllamaModels = async (inputUrl) => {
+    let baseUrl = inputUrl.trim();
+    // Remove trailing slash
+    if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+
+    // Attempt to clean /v1 to find the root endpoint for api/tags
+    let rootUrl = baseUrl;
+    if (rootUrl.endsWith('/v1')) {
+      rootUrl = rootUrl.slice(0, -3);
+    }
+
+    try {
+      // Try fetching from /api/tags (Ollama native)
+      const response = await universalFetch(`${rootUrl}/api/tags`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.models && Array.isArray(data.models)) {
+          return data.models.map(m => m.name);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to fetch from /api/tags, trying /v1/models', e);
+    }
+
+    // Fallback: Try /v1/models (OpenAI compatible)
+    try {
+      let v1Url = baseUrl;
+      if (!v1Url.endsWith('/v1')) v1Url = `${v1Url}/v1`;
+
+      const response = await universalFetch(`${v1Url}/models`);
+      if (response.ok) {
+        const data = await response.json();
+        // OpenAI format: { data: [ { id: ... }, ... ] }
+        if (data.data && Array.isArray(data.data)) {
+          return data.data.map(m => m.id);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch Ollama models', e);
+    }
+
+    return [];
   };
 
   return {
     AI_PROVIDERS,
-    analyzeWithAI
+    analyzeWithAI,
+    getOllamaModels
   };
 })();

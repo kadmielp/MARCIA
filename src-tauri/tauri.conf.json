@@ -15,12 +15,16 @@
       "all": false,
       "shell": {
         "all": false,
-        "open": false
+        "open": true
       },
       "http": {
         "all": true,
         "request": true,
-        "scope": ["http://localhost:11434/*", "https://**", "https://chat.maritaca.ai/**"]
+        "scope": [
+          "http://localhost:11434/*",
+          "https://**",
+          "https://chat.maritaca.ai/**"
+        ]
       },
       "window": {
         "all": false,
@@ -64,4 +68,3 @@
     ]
   }
 }
-

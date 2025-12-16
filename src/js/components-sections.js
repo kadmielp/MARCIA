@@ -5,13 +5,13 @@ window.MarciaSections = (() => {
   // Gauge Section Component
   const GaugeSection = ({ result, displayScore, getGaugeFillDasharray }) => {
     return React.createElement('div', {
-      className: "p-8 md:p-12 gauge-gradient"
-    }, 
+      className: "p-4 gauge-gradient flex items-center justify-center"
+    },
       React.createElement('div', {
         className: "flex flex-col items-center"
-      }, 
+      },
         React.createElement('div', {
-          className: "relative w-80 h-48 mb-6"
+          className: "relative w-80 h-48 mb-2"
         }, [
           // SVG Gauge
           React.createElement('svg', {
@@ -106,7 +106,7 @@ window.MarciaSections = (() => {
             React.createElement('text', {
               key: 'label-50',
               x: "100",
-              y: "20",
+              y: "12",
               textAnchor: "middle",
               className: "text-xs font-bold",
               fill: "white",
@@ -126,10 +126,10 @@ window.MarciaSections = (() => {
           // Score display
           React.createElement('div', {
             key: 'score-display',
-            className: "absolute inset-0 flex items-center justify-center"
+            className: "absolute inset-0 flex items-center justify-center pt-8"
           },
             React.createElement('div', {
-              className: "text-center mt-12"
+              className: "text-center"
             }, [
               React.createElement('div', {
                 key: 'score-number',
@@ -137,16 +137,16 @@ window.MarciaSections = (() => {
               }, [
                 React.createElement('span', {
                   key: 'score',
-                  className: "text-7xl font-black text-white drop-shadow-lg"
+                  className: "text-6xl font-black text-white drop-shadow-lg"
                 }, result ? displayScore : 0),
                 React.createElement('span', {
                   key: 'percent',
-                  className: "text-3xl font-bold text-white/80 ml-1"
+                  className: "text-2xl font-bold text-white/80 ml-1"
                 }, "%")
               ]),
               result && React.createElement('span', {
                 key: 'category',
-                className: "text-sm font-semibold mt-2 block text-yellow-300 uppercase tracking-wide"
+                className: "text-sm font-bold mt-1 block text-yellow-300 uppercase tracking-wide drop-shadow-md bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm"
               }, result.category)
             ])
           )
@@ -242,51 +242,51 @@ window.MarciaSections = (() => {
   // Results Section Component
   const ResultsSection = ({ grievance, result, resetApp, tLang }) => {
     return React.createElement('div', {
-      className: "space-y-6 animate-fadeIn"
+      className: "space-y-4 animate-fadeIn h-full flex flex-col"
     }, [
       // User's grievance
       React.createElement('div', {
         key: 'grievance-display',
-        className: "backdrop-blur-sm bg-white/10 rounded-2xl p-5 border border-white/20"
+        className: "backdrop-blur-sm bg-white/10 rounded-xl p-4 border border-white/20"
       },
         React.createElement('p', {
-          className: "italic text-white font-medium"
+          className: "italic text-white font-medium text-sm md:text-base"
         }, `"${grievance}"`)
       ),
 
       // Analysis and advice
       React.createElement('div', {
         key: 'results',
-        className: "space-y-4"
+        className: "grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow overflow-y-auto"
       }, [
         // Analysis
-        React.createElement('div', { key: 'analysis' }, [
+        React.createElement('div', { key: 'analysis', className: "flex flex-col" }, [
           React.createElement('p', {
             key: 'analysis-title',
-            className: "text-lg font-bold mb-3 text-yellow-300 uppercase tracking-wide"
+            className: "text-sm font-bold mb-2 text-yellow-300 uppercase tracking-wide"
           }, tLang('analysisTitle')),
           React.createElement('div', {
             key: 'analysis-content',
-            className: "backdrop-blur-sm bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl p-6 border border-orange-300/30 shadow-lg"
+            className: "flex-grow backdrop-blur-sm bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl p-4 border border-orange-300/30 shadow-md"
           },
             React.createElement('p', {
-              className: "text-white text-lg leading-relaxed"
+              className: "text-white text-base leading-relaxed"
             }, result.judgment)
           )
         ]),
 
         // Advice
-        React.createElement('div', { key: 'advice' }, [
+        React.createElement('div', { key: 'advice', className: "flex flex-col" }, [
           React.createElement('p', {
             key: 'advice-title',
-            className: "text-lg font-bold mb-3 text-green-300 uppercase tracking-wide"
+            className: "text-sm font-bold mb-2 text-green-300 uppercase tracking-wide"
           }, tLang('adviceTitle')),
           React.createElement('div', {
             key: 'advice-content',
-            className: "backdrop-blur-sm bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl p-6 border border-green-300/30 shadow-lg"
+            className: "flex-grow backdrop-blur-sm bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl p-4 border border-green-300/30 shadow-md"
           },
             React.createElement('p', {
-              className: "text-white text-lg leading-relaxed"
+              className: "text-white text-base leading-relaxed"
             }, result.advice)
           )
         ])
